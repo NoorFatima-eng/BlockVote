@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block title %}BlockVote — Secure Blockchain Voting{% endblock %}
+{% block content %}
+
+<div class="text-center py-5">
+  <div style="font-size: 4rem;">🗳️</div>
+  <h1 class="fw-bold mt-2" style="color:#1a1a2e;">Blockchain Voting System</h1>
+  <p class="text-muted fs-5">Transparent. Tamper-proof. Decentralized.</p>
+
+  <div class="row justify-content-center my-4 g-3">
+    <div class="col-auto">
+      <div class="card px-4 py-3 text-center" style="min-width:140px">
+        <div class="fs-2 fw-bold" style="color:#7c83fd;">{{ total }}</div>
+        <div class="text-muted small">Votes Cast</div>
+      </div>
+    </div>
+    {% if winner and winner.votes > 0 %}
+    <div class="col-auto">
+      <div class="card px-4 py-3 text-center" style="min-width:180px">
+        <div class="fs-5 fw-bold" style="color:#28a745;">{{ winner.name }}</div>
+        <div class="text-muted small">Currently Leading ({{ winner.votes }} votes)</div>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+
+  <div class="d-flex justify-content-center gap-3 flex-wrap mt-3">
+    {% if session.voter_id %}
+      <a href="{{ url_for('vote') }}" class="btn btn-vote btn-lg px-4">
+        <i class="bi bi-check2-square me-2"></i>Cast Your Vote
+      </a>
+    {% else %}
+      <a href="{{ url_for('register') }}" class="btn btn-vote btn-lg px-4">
+        <i class="bi bi-person-plus me-2"></i>Register to Vote
+      </a>
+      <a href="{{ url_for('login') }}" class="btn btn-outline-secondary btn-lg px-4">
+        <i class="bi bi-box-arrow-in-right me-2"></i>Login
+      </a>
+    {% endif %}
+    <a href="{{ url_for('results') }}" class="btn btn-outline-secondary btn-lg px-4">
+      <i class="bi bi-bar-chart me-2"></i>View Results
+    </a>
+  </div>
+</div>
+
+<div class="row g-3 mt-2">
+  <div class="col-md-4">
+    <div class="card p-3 h-100 text-center">
+      <div class="fs-2 mb-2">🔒</div>
+      <h6 class="fw-bold">Encrypted Votes</h6>
+      <p class="text-muted small mb-0">Every vote is hashed with SHA-256 and chained to the previous block — impossible to alter.</p>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card p-3 h-100 text-center">
+      <div class="fs-2 mb-2">🚫</div>
+      <h6 class="fw-bold">No Double Voting</h6>
+      <p class="text-muted small mb-0">Each voter ID can only vote once. The blockchain enforces this automatically.</p>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card p-3 h-100 text-center">
+      <div class="fs-2 mb-2">🔍</div>
+      <h6 class="fw-bold">Fully Auditable</h6>
+      <p class="text-muted small mb-0">Any tampering with the chain is instantly detected. The admin page shows block-by-block verification.</p>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

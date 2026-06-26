@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+{% block title %}Live Results — BlockVote{% endblock %}
+{% block content %}
+
+<h3 class="fw-bold mb-1"><i class="bi bi-bar-chart me-2" style="color:#7c83fd;"></i>Live Election Results</h3>
+<p class="text-muted small mb-1">Auto-refreshes every 5 seconds from the blockchain.</p>
+<p class="text-muted small mb-4">Total votes: <strong id="total-votes">{{ total }}</strong></p>
+
+{% if total == 0 %}
+<div class="card p-5 text-center text-muted">
+  <div style="font-size:3rem;">🗳️</div>
+  <p class="mt-3">No votes yet. Be the first!</p>
+  <a href="{{ url_for('vote') }}" class="btn btn-vote">Vote Now</a>
+</div>
+{% else %}
+<div id="winner-banner" class="alert" style="background:#e8eaff;border:none;border-radius:12px;">
+  <i class="bi bi-trophy-fill me-2" style="color:#7c83fd;"></i>
+  <strong>Current Leader:</strong> <span id="winner-name">{% if winner %}{{ winner.name }}{% endif %}</span>
+  with <span id="winner-votes">{% if winner %}{{ winner.votes }}{% endif %}</span> vote(s)
+</div>
+
+<div class="card p-4 mb-4">
+  <canvas id="voteChart" height="120"></canvas>
+</div>
+
+<div class="card p-3">
+  <table class="table table-hover mb-0" id="results-table">
+    <thead><tr><th>Candidate</th><th class="text-center">Votes</th><th>Share</th></tr></thead>
+    <tbody>
+      {% for candidate, count in results.items() %}
+      <tr>
+        <td class="fw-semibold">{{ candidate }}</td>
+        <td class="text-center" id="count-{{ loop.index }}">{{ count }}</td>
+        <td style="min-width:200px;">
+          <div class="d-flex align-items-center gap-2">
+            <div class="progress flex-grow-1" style="height:10px;border-radius:6px;">
+              <div class="progress-bar" role="progressbar"
+                   style="width:{% if total > 0 %}{{ (count/total*100)|round(1) }}{% else %}0{% endif %}%;background:#7c83fd;"
+                   id="bar-{{ loop.index }}"></div>
+            </div>
+            <span class="text-muted small" id="pct-{{ loop.index }}">
+              {% if total > 0 %}{{ (count/total*100)|round(1) }}%{% else %}0%{% endif %}
+            </span>
+          </div>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endif %}
+
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+  const CANDIDATE_COLORS = {
+    'Imran Khan (PTI)':      '#00a651',
+    'Shehbaz Sharif (PMLN)': '#f4a70a',
+    'Bilawal Bhutto (PPP)':  '#e4002b',
+  };
+  const DEFAULT_COLORS = ['#7c83fd','#5cb85c','#f0ad4e','#d9534f','#5bc0de'];
+
+  function getColors(labels) {
+    return labels.map((lbl, i) =>
+      CANDIDATE_COLORS[lbl] || DEFAULT_COLORS[i % DEFAULT_COLORS.length]
+    );
+  }
+
+  const initialLabels = {{ results.keys()|list|tojson }};
+  const initialData   = {{ results.values()|list|tojson }};
+
+  {% if total > 0 %}
+  const chart = new Chart(document.getElementById('voteChart'), {
+    type: 'bar',
+    data: {
+      labels: initialLabels,
+      datasets: [{
+        label: 'Votes',
+        data: initialData,
+        backgroundColor: getColors(initialLabels),
+        borderRadius: 8,
+        borderSkipped: false
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { display: false } },
+      scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }
+    }
+  });
+
+  // Auto-refresh every 5 seconds
+  setInterval(() => {
+    fetch('/api/results')
+      .then(r => r.json())
+      .then(data => {
+        const labels = Object.keys(data.results);
+        const vals   = Object.values(data.results);
+        chart.data.labels = labels;
+        chart.data.datasets[0].data           = vals;
+        chart.data.datasets[0].backgroundColor = getColors(labels);
+        chart.update();
+        document.getElementById('total-votes').textContent = data.total;
+        if (data.winner) {
+          document.getElementById('winner-name').textContent  = data.winner.name;
+          document.getElementById('winner-votes').textContent = data.winner.votes;
+        }
+      });
+  }, 5000);
+  {% endif %}
+</script>
+{% endblock %}

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}BlockVote{% endblock %}</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  <style>
+    body { background: #f8f9fa; font-family: 'Segoe UI', sans-serif; }
+    .navbar { background: linear-gradient(135deg, #1a1a2e, #16213e); }
+    .navbar-brand { font-weight: 700; font-size: 1.4rem; color: #e0e0ff !important; }
+    .chain-icon { color: #7c83fd; margin-right: 6px; }
+    .btn-vote { background: #7c83fd; border: none; color: white; font-weight: 600; }
+    .btn-vote:hover { background: #5c63dd; color: white; }
+    .card { border: none; border-radius: 14px; box-shadow: 0 2px 16px rgba(0,0,0,0.07); }
+    .alert { border-radius: 10px; }
+    .badge-block { background: #e8eaff; color: #3c43b5; font-size: 0.75rem; border-radius: 6px; padding: 3px 10px; }
+  </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark mb-4">
+  <div class="container">
+    <a class="navbar-brand" href="{{ url_for('index') }}">
+      <i class="bi bi-link-45deg chain-icon"></i>BlockVote
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="nav">
+      <ul class="navbar-nav ms-auto gap-1">
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('index') }}"><i class="bi bi-house me-1"></i>Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('results') }}"><i class="bi bi-bar-chart me-1"></i>Results</a></li>
+        {% if session.voter_id %}
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('vote') }}"><i class="bi bi-check2-square me-1"></i>Vote</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('admin') }}"><i class="bi bi-shield-check me-1"></i>Admin</a></li>
+          <li class="nav-item"><a class="nav-link text-warning" href="{{ url_for('logout') }}"><i class="bi bi-box-arrow-right me-1"></i>Logout</a></li>
+        {% else %}
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('register') }}"><i class="bi bi-person-plus me-1"></i>Register</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('login') }}"><i class="bi bi-box-arrow-in-right me-1"></i>Login</a></li>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="container" style="max-width: 860px;">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for category, message in messages %}
+      <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+      </div>
+    {% endfor %}
+  {% endwith %}
+
+  {% block content %}{% endblock %}
+</div>
+
+<footer class="text-center text-muted py-4 mt-5" style="font-size:0.85rem;">
+  BlockVote — Blockchain Voting System &mdash; Information Security Project
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

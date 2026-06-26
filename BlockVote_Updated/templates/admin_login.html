@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Admin Login — BlockVote{% endblock %}
+{% block content %}
+
+<div class="row justify-content-center">
+  <div class="col-md-5">
+    <div class="card p-4" style="border:2px solid #7c83fd;">
+      <div class="text-center mb-3">
+        <div style="font-size:3rem;">🔐</div>
+        <h4 class="fw-bold mt-2">Admin Access</h4>
+        <p class="text-muted small">Restricted area. Authorized personnel only.</p>
+      </div>
+
+      <form method="POST">
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Secret Key</label>
+          <input type="text" name="secret_key" class="form-control font-monospace"
+                 placeholder="Enter admin secret key" required>
+          <div class="form-text">URL key required to access this page.</div>
+        </div>
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Admin Username</label>
+          <input type="text" name="username" class="form-control" placeholder="admin" required>
+        </div>
+        <div class="mb-4">
+          <label class="form-label fw-semibold">Admin Password</label>
+          <input type="password" name="password" class="form-control" placeholder="Password" required>
+        </div>
+        <button type="submit" class="btn btn-vote w-100 py-2">
+          <i class="bi bi-shield-lock me-2"></i>Access Admin Panel
+        </button>
+      </form>
+
+      <div class="alert alert-warning mt-3 small mb-0">
+        <i class="bi bi-exclamation-triangle me-1"></i>
+        All login attempts are logged and monitored.
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

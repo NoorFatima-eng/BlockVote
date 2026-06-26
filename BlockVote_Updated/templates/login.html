@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}Login — BlockVote{% endblock %}
+{% block content %}
+
+<div class="row justify-content-center">
+  <div class="col-md-5">
+    <div class="card p-4">
+      <h3 class="fw-bold mb-1"><i class="bi bi-box-arrow-in-right me-2" style="color:#7c83fd;"></i>Voter Login</h3>
+      <p class="text-muted small mb-4">Enter your Voter ID and password to access the ballot.</p>
+
+      <form method="POST">
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Voter ID</label>
+          <input type="text" name="voter_id" class="form-control font-monospace text-uppercase"
+                 placeholder="e.g. A1B2C3D4E5F6" maxlength="12" required
+                 style="letter-spacing:2px; font-size:1.1rem;">
+        </div>
+        <div class="mb-4">
+          <label class="form-label fw-semibold">Password</label>
+          <input type="password" name="password" class="form-control" placeholder="Your password" required>
+        </div>
+        <button type="submit" class="btn btn-vote w-100 py-2">
+          <i class="bi bi-unlock me-2"></i>Login
+        </button>
+      </form>
+
+      <p class="text-center text-muted small mt-3">
+        Not registered yet? <a href="{{ url_for('register') }}">Register here</a>
+      </p>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

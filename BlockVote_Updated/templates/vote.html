@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}Cast Your Vote — BlockVote{% endblock %}
+{% block content %}
+
+<div class="row justify-content-center">
+  <div class="col-md-7">
+    <div class="card p-4">
+      <h3 class="fw-bold mb-1"><i class="bi bi-check2-square me-2" style="color:#7c83fd;"></i>Cast Your Vote</h3>
+      <p class="text-muted small mb-4">Welcome, <strong>{{ voter_name }}</strong>. Select a candidate below. This action is final and will be recorded on the blockchain.</p>
+
+      {% if not has_signing_key %}
+      <div class="alert alert-warning small mb-3">
+        <i class="bi bi-exclamation-triangle me-2"></i>
+        <strong>Signing key not found!</strong> You did not register in this session.
+        If you registered just now, you can vote directly.
+        If you were already registered and logged in again,
+        your vote cannot be signed — please contact the admin or re-register.
+      </div>
+      {% else %}
+      <div class="alert alert-success small mb-3 py-2">
+        <i class="bi bi-shield-check me-1"></i>
+        Signing key found ✓ — Your vote will be signed with RSA
+      </div>
+      {% endif %}
+
+      <form method="POST">
+        <div class="mb-4">
+          {% for candidate in candidates %}
+          <div class="mb-3">
+            <label class="d-flex align-items-center gap-3 card p-3 cursor-pointer"
+                   style="cursor:pointer; border: 2px solid transparent; transition: border 0.2s;"
+                   onmouseover="this.style.borderColor='#7c83fd'"
+                   onmouseout="this.style.borderColor='transparent'">
+              <input type="radio" name="candidate" value="{{ candidate }}" class="form-check-input mt-0" required
+                     style="width:22px; height:22px;">
+              <div>
+                <div class="fw-semibold fs-5">{{ candidate }}</div>
+                <div class="text-muted small">Candidate</div>
+              </div>
+            </label>
+          </div>
+          {% endfor %}
+        </div>
+
+        <div class="alert alert-warning small">
+          <i class="bi bi-exclamation-triangle me-2"></i>
+          Your vote is <strong>permanent</strong>. Once submitted, it will be written to the blockchain and cannot be changed.
+        </div>
+
+        <button type="submit" class="btn btn-vote w-100 py-2 mt-2"
+                onclick="return confirm('Are you sure? This vote cannot be changed.')">
+          <i class="bi bi-send me-2"></i>Submit Vote to Blockchain
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

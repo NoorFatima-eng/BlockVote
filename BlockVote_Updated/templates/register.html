@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Register — BlockVote{% endblock %}
+{% block content %}
+
+<div class="row justify-content-center">
+  <div class="col-md-6">
+    <div class="card p-4">
+      <h3 class="fw-bold mb-1"><i class="bi bi-person-plus me-2" style="color:#7c83fd;"></i>Register to Vote</h3>
+      <p class="text-muted small mb-4">Your Voter ID is generated from your name and national ID. Save it — you need it to login.</p>
+
+      {% if voter_id %}
+      <div class="alert alert-success text-center">
+        <div class="fw-bold fs-5 mb-1">Registration Successful!</div>
+        <div class="text-muted small mb-2">Your unique Voter ID is:</div>
+        <div class="fs-4 fw-bold" style="color:#1a1a2e; letter-spacing:3px;">{{ voter_id }}</div>
+        <div class="text-muted small mt-2">⚠️ Save this ID — you will need it to login and vote.</div>
+      </div>
+      <a href="{{ url_for('login') }}" class="btn btn-vote w-100">Proceed to Login</a>
+      {% else %}
+      <form method="POST">
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Full Name</label>
+          <input type="text" name="name" class="form-control" placeholder="e.g. Ahmed Khan" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label fw-semibold">National ID / CNIC</label>
+          <input type="text" name="national_id" class="form-control" placeholder="e.g. 42101-1234567-1" required>
+          <div class="form-text">Used to generate your unique Voter ID. Not stored anywhere.</div>
+        </div>
+        <div class="mb-4">
+          <label class="form-label fw-semibold">Password</label>
+          <input type="password" name="password" class="form-control" placeholder="Choose a password" required>
+        </div>
+        <button type="submit" class="btn btn-vote w-100 py-2">
+          <i class="bi bi-person-check me-2"></i>Register
+        </button>
+      </form>
+      <p class="text-center text-muted small mt-3">Already registered? <a href="{{ url_for('login') }}">Login here</a></p>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+{% endblock %}
